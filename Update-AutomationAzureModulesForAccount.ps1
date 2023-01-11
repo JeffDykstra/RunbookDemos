@@ -30,8 +30,7 @@ Set this to Az if your runbooks use only Az modules to avoid conflicts.
 .PARAMETER AzureEnvironment
 (Optional) Azure environment name.
 
-.PARAMETER Login
-(Optional) If $false, do not login to Azure.
+
 
 .PARAMETER ModuleVersionOverrides
 (Optional) Module versions to use instead of the latest on the PowerShell Gallery.
@@ -61,8 +60,6 @@ param(
     [string] $AzureModuleClass = 'AZ',
 
     [string] $AzureEnvironment = 'AzureCloud',
-
-    [bool] $Login = $true,
     
     [string] $ModuleVersionOverrides = $null,
     
@@ -110,18 +107,6 @@ function ConvertJsonDictTo-HashTable($JsonString)
     $Result
 }
 
-# Use the Run As connection to login to Azure
-function Login-AzureAutomation([bool] $AzModuleOnly)
-{
-    try
-    {
-        Connect-AzAccount -Identity
-    } 
-    catch 
-    {
-        throw $_.Exception
-    }   
-}
 
 # Checks the PowerShell Gallery for the latest available version for the module
 function Get-ModuleDependencyAndLatestVersion([string] $ModuleName)
@@ -547,11 +532,7 @@ else
 # Import the latest version of the Az automation and accounts version to the local sandbox
 Update-ProfileAndAutomationVersionToLatest $AutomationModuleName
 
-if ($Login)
-{
-    Connect-AzAccount -Identity
-    #Login-AzureAutomation $UseAzModule
-}
+Connect-AzAccount -Identity
 
 $ModuleImportMapOrder = Create-ModuleImportMapOrder $UseAzModule
 Import-ModulesInAutomationAccordingToDependency $ModuleImportMapOrder $UseAzModule
