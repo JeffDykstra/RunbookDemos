@@ -1,3 +1,4 @@
+#Requires -module Az.ResourceGraph
 Connect-AzAccount -Identity
 $query = @'
 resourcecontainers
@@ -14,4 +15,4 @@ resourcecontainers
 | project name,resourceGroup,subscriptionId,Environment,AppOwner,id,boolLinuxVM,boolWindowsVM
 '@
 $RgswithVMinfo = Search-AzGraph -Query $query -UseTenantScope
-$RgswithVMinfo
+$RgswithVMinfo | ogv
