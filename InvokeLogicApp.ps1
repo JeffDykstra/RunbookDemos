@@ -17,6 +17,9 @@ resourcecontainers
 | project name,resourceGroup,location,subscriptionId,LinuxVMs,WindowsVMs,Environment,AppOwner,boolLinuxVM,boolWindowsVM,id,DefaultRuleCount,rulelist 
 | sort by subscriptionId
 "@
-
+$uri = Get-AutomationVariable -name SendEmailUri
 $RgswithVMinfo = Search-AzGraph -Query $ResoureGroupQuery -UseTenantScope
-$RgswithVMinfo 
+$RgswithVMinfo | foreach-object {
+    Invoke-RestMethod -ContentType "application/json" -body ($_ | ConvertTo-Json) -Method Post -Uri $uri
+
+}
