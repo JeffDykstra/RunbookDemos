@@ -20,6 +20,7 @@ resourcecontainers
 $uri = Get-AutomationVariable -name SendEmailUri
 $RgswithVMinfo = Search-AzGraph -Query $ResoureGroupQuery -UseTenantScope
 $RgswithVMinfo | foreach-object {
+    Write-verbose "Sending email about $($_.resourcegroup) owned by $($_.AppOwner) "
     Invoke-RestMethod -ContentType "application/json" -body ($_ | ConvertTo-Json) -Method Post -Uri $uri
 
 }
